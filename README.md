@@ -1,4 +1,4 @@
-wornado
+testnews
 =======
 
-xlyx
+新闻博客DEMO
