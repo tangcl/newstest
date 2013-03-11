@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>详情页</title>
+<style>
+.button{
+    width:80%;
+    height:auto;
+    display:block;
+    overflow:hidden;
+    margin-bottom:8px;
+    font-size:10pt;
+    MARGIN-RIGHT: auto; MARGIN-LEFT: auto;
+}
+
+
+ul,li,ol,dl,dt,dd{
+	padding:0px;
+	margin:0px;
+	list-style-type: none;
+}
+a{
+	text-decoration: none;
+}
+.list_dl{
+ width:80%;
+ height:auto;
+ display:block;
+ overflow:hidden;
+ margin-bottom:8px;
+ font-size:10pt;
+  MARGIN-RIGHT: auto; MARGIN-LEFT: auto; 
+}
+.list_dl dt{
+	width:100%;
+	height:24px;
+	margin-bottom:1px;
+	background-color:#003366;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #FF9933;
+	background-repeat:repeat-x;
+	background-position: right top;
+}
+.list_dl dt b{
+	float:left;
+	width:240px;
+	height:24px;
+	line-height:24px;
+	display:block;
+	color:#FFFFFF;
+	margin-left:0px;
+}
+.list_dl dt a{
+	width:10em;
+	height:23px;
+	display:block;
+	line-height:23px;
+	margin-top:1px;
+	color:#FFFFFF;
+	float:right;
+	text-align:left;
+	padding-right:10px;
+}
+.list_dl dt a.more{
+	color:#C1CEDB;
+}
+.list_dl dt a.more:hover{
+color:#fff;
+}
+.list_dl dd{
+display:block;
+margin-top:4px;
+clear:both;}
+.list_dl ul li{
+	text-align:left;
+	text-indent: 1.3em;
+	line-height:220%;
+	border-bottom-width: 1px;
+	border-bottom-style: dashed;
+	border-bottom-color: #CCCCCC;
+	background-repeat:no-repeat;
+	background-position: 4px center;
+}
+a.link1{
+	color:#797979;
+}
+.list_dl ul li span{
+	float:right;
+	color:#9B9B9B;
+	margin-right:7px;
+}
+</style>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var strCookie = document.cookie;
+            var arrCookie=strCookie.split("; ");
+            var font_id = -1;
+            for(var i=0;i<arrCookie.length;i++){
+                var arr=arrCookie[i].split("=");
+                //找到名称为userId的cookie，并返回它的值
+                if("font_size"==arr[0]){
+                    font_id=arr[1];
+                    break;
+                }
+            }
+
+            if(font_id!="NaN"){
+                $("#textfont").attr("size", font_id);
+            }else{
+                $("#textfont").attr("size", 5);
+            };
+            $("#big").bind("click", function(){
+                //先检查cookie中是否存在值为font_size的值,存在使用,不存在默认5;
+                var textfont = $("#textfont").attr("size");
+                textfont = parseInt(textfont) + 1;
+                $("#textfont").attr("size", textfont);
+                document.cookie="font_size="+textfont;
+            })
+            $("#small").bind("click", function(){
+                var textfont = $("#textfont").attr("size");
+                textfont = parseInt(textfont) - 1;
+                $("#textfont").attr("size", textfont);
+                document.cookie="font_size="+textfont;
+            })
+            $("#support").bind("click", function(){
+                //检查当前cookie中是否存在,存在不请求服务器
+                var strCookie = document.cookie;
+                var arrCookie=strCookie.split("; ");
+                var support_cookie = -1;
+                var news_id = $("#newstitle").attr("value");
+                for(var i=0;i<arrCookie.length;i++){
+                    var arr=arrCookie[i].split("=");
+                    //找到名称为userId的cookie，并返回它的值
+                    if(news_id==arr[0]){
+                        support_cookie=arr[1];
+                    }
+                }
+                if(support_cookie==-1){
+                    var support = $("#supportnum").text();
+                    //现有的+1
+                    support = parseInt(support)+1;
+                    //文章id
+                    var news_id = $("#newstitle").attr("value");
+                    //ajax请求
+                    $.ajax({
+                        url:"/support/"+ news_id+"/"+support+'/',
+                        success:function(data){
+                            var t = eval(data);
+                            //更新显示
+                            $("#supportnum").html(t["support"]);
+                        }
+                    })
+                }else{
+                    alert("你已经投过支持票了!");
+                };
+            })
+            $("#point").bind("click", function(){
+                var strCookie = document.cookie;
+                var arrCookie=strCookie.split("; ");
+                var point_cookie = -1;
+                for(var i=0;i<arrCookie.length;i++){
+                    var arr=arrCookie[i].split("=");
+                    //找到名称为userId的cookie，并返回它的值
+                    if("point_cookie"==arr[0]){
+                        point_cookie=arr[1];
+                        break;
+                    }
+                }
+                if(point_cookie==-1){
+                    var point = $("#pointnum").text();
+                    //现有的+1
+                    point = parseInt(point)+1;
+                    //文章id
+                    var news_id = $("#newstitle").attr("value");
+                    //ajax请求
+                    $.ajax({
+                        url:"/point/"+ news_id+"/"+point+'/',
+                        success:function(data){
+                            var t = eval(data);
+                            //更新显示
+                            $("#pointnum").html(t["point"]);
+                        }
+                    })
+                }else{
+                    alert("你已经投过支持票了!");
+                };
+            })
+        })
+    </script>
+</head>
+
+<body>
+<div id="cc"></div>
+<dl class="list_dl">
+    <dt><b style="margin-left:20px;" id="newstitle" value="{{news.id}}">{{ news.title}} </b></dt>
+    <font style="float:right;margin-right: 100px;">作者:{{ news.username }} 发布时间:{{news.create_date}}</font>
+    <dd>
+        <ul id="content" style="min-height: 550px;height: auto;background-color: #9B9B9B;">
+            <font id="textfont">
+            {% raw news.content %}
+                <font>
+
+        </ul>
+        </dd>
+    <dt style="font-size: 12px;float:left;margin-left: auto;margin-right: auto;">
+        <a id="big">大</a><a id="small" >小</a>
+        <a id="support">顶一下(<font id="supportnum">{% if info%}{{info.support_id}}{% else %}0{%end%}</font>)</a> <a id="point">踩一下(<font id="pointnum">{% if info %}{{info.point_id}}{%else%}0{%end%}</font>)</a></dt>
+</dl>
+
+</body>
+
+</html>

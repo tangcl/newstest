@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>前台展示页</title>
+<style>
+.button{
+    width:80%;
+    height:auto;
+    display:block;
+    overflow:hidden;
+    margin-bottom:8px;
+    font-size:10pt;
+    MARGIN-RIGHT: auto; MARGIN-LEFT: auto;
+}
+
+
+ul,li,ol,dl,dt,dd{
+	padding:0px;
+	margin:0px;
+	list-style-type: none;
+}
+a{
+	text-decoration: none;
+}
+.list_dl{
+ width:80%;
+ height:auto;
+ display:block;
+ overflow:hidden;
+ margin-bottom:8px;
+ font-size:10pt;
+  MARGIN-RIGHT: auto; MARGIN-LEFT: auto; 
+}
+.list_dl dt{
+	width:100%;
+	height:24px;
+	margin-bottom:1px;
+	background-color:#003366;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #FF9933;
+	background-repeat:repeat-x;
+	background-position: right top;
+}
+.list_dl dt b{
+	float:left;
+	width:240px;
+	height:24px;
+	line-height:24px;
+	display:block;
+	color:#FFFFFF;
+	margin-left:0px;
+}
+.list_dl dt a{
+	width:10em;
+	height:23px;
+	display:block;
+	line-height:23px;
+	margin-top:1px;
+	color:#FFFFFF;
+	float:right;
+	text-align:left;
+	padding-right:10px;
+}
+.list_dl dt a.more{
+	color:#C1CEDB;
+}
+.list_dl dt a.more:hover{
+color:#fff;
+}
+.list_dl dd{
+display:block;
+margin-top:4px;
+clear:both;}
+.list_dl ul li{
+	text-align:left;
+	text-indent: 1.3em;
+	line-height:220%;
+	border-bottom-width: 1px;
+	border-bottom-style: dashed;
+	border-bottom-color: #CCCCCC;
+	background-repeat:no-repeat;
+	background-position: 4px center;
+}
+a.link1{
+	color:#797979;
+}
+.list_dl ul li span{
+	float:right;
+	color:#9B9B9B;
+	margin-right:7px;
+}
+</style>
+</head>
+
+<body>
+<button class="button" onclick="window.location='/index/'" title="获取所有分类最新文章">获取所有分类最新文章</button>
+
+<dl class="list_dl">
+    <dt><b></b></dt>
+    <dd>
+        <ul>
+            {% for news in data %}
+                <li><span>{{ news.create_date}}</span><a href="#" class="link1">[{{ news.username }}]</a> <a href="/detail/{{ news.id}}/" title="点击获取详情">{{ news.title }}</a></li>
+            {% end %}
+        </ul>
+    </dd>
+</dl>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>主页</title>
+    <link rel="stylesheet" type="text/css" href="/static/images/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/markitup/skins/markitup/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/markitup/sets/default/style.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="/static/markitup/jquery.markitup.js"></script>
+    <script type="text/javascript" src="/static/markitup/sets/default/set.js"></script>
+    <script type="text/javascript">
+        function post_article(status)
+        {
+            var category_id = $("#selectTest").val();
+            var title = $("#title").val();
+            var username = $("#username").val();
+            var content = $("textarea").val();
+            if(title || content){
+                htmlobj=$.ajax({url:"/artile/ajax/",
+//                    async:false,
+                    type:"POST",
+                    data:"category_id="+category_id+"&title="+title+"&username="+username+"&content="+content+"&status="+status,
+                    success: function (data) {
+                        var t = eval(data);
+                        if(t.sign){
+                            alert("文章发布成功");
+                            //立即更新下面的列表.
+                            $.ajax({
+                                url:"/artile/ajax/",
+//                                async:false,
+                                success:function(data){
+                                    var t = eval(data);
+                                    var html = "";
+                                    for(var i = 0; i< t.data.length; i++){
+                                        html = html + '<li><a id="n0">*</a>';
+                                        html = html + '<a id="n1" style="margin-left: 30px;" >'+t.data[i].category+'</a>';
+                                        html = html + '<a id="n1" style="margin-left: -10px;">'+t.data[i].title+'</a>';
+                                        if(t.data[i].status == 1){
+                                            var status = "编辑中...";
+                                            html = html + '<a id="n1" name="status'+t.data[i].id+'" onclick="return change_status('+t.data[i].id + ","+ 2 +')">'+status+'</a>';
+                                        }
+                                        else if(t.data[i].status == 2){
+                                            var status = "已发布";
+                                            html = html + '<a id="n1" name="status'+t.data[i].id+'" onclick="return change_status('+t.data[i].id+ ","+ 0 +')">'+status+'</a>';
+                                        }
+                                        else{
+                                            var status = "已删除";
+                                            html = html + '<a id="n1" name="status'+t.data[i].id+'" onclick="return change_status('+t.data[i].id + ","+ 1 +')">'+status+'</a>';
+                                        }
+                                        html = html + '<a id="n1">'+t.data[i].content+'</a>';
+                                        html = html + '<a id="n1">'+t.data[i].create_date+'</a>';
+                                    }
+                                    html = html + "</li>";
+                                    $("#list").append(html);
+                                }
+                            })
+                        }else{
+                            alert("错误!");
+                        }
+                    }})
+            }else{
+                alert("请确认标题和内容不为空!")
+            }
+        }
+
+
+        function go_model(model)
+        {
+            //jqeury ajax
+
+
+                htmlobj=$.ajax({url:"/model/ajax/model="+model,
+//                    async:false,
+                    success: function (data) {
+                        var t = eval(data);
+                        if(t.model == 1){
+                            $("#model").html('<input  type="button" onclick="go_model(2)"  style="float:right;margin-top: 0px;" value="切换至MD模式"/>');
+                            $("#textcontent").html('<textarea cols="98" rows="22" style="border: 1px;"></textarea>');
+
+
+                           }
+                        if(t.model == 2){
+                            $("#model").html('<input  type="button" onclick="go_model(1)" value="切换至简体模式"/>');
+                            $("#textcontent").html('<textarea id="markItUp" cols="80" rows="20"></textarea>');
+                        }
+                        $(document).ready(function() {
+                            // Add markItUp! to your textarea in one line
+                            // $('textarea').markItUp( { Settings }, { OptionalExtraSettings } );
+                            $('#markItUp').markItUp(mySettings);
+                            $('.add').click(function() {
+                                $('#markItUp').markItUp('insert',
+                                        { 	openWith:'<opening tag>',
+                                            closeWith:'<\/closing tag>',
+                                            placeHolder:"New content"
+                                        }
+                                );
+                                return false;
+                            });
+
+                            // And you can add/remove markItUp! whenever you want
+                            // $(textarea).markItUpRemove();
+                            $('.toggle').click(function() {
+                                if ($("#markItUp.markItUpEditor").length === 1) {
+                                    $("#markItUp").markItUp('remove');
+                                    $("span", this).text("get markItUp! back");
+                                } else {
+                                    $('#markItUp').markItUp(mySettings);
+                                    $("span", this).text("remove markItUp!");
+                                }
+                                return false;
+                            });
+                        });
+                    }
+                });
+        }
+    </script>
+
+    <style type="text/css">
+        <!--
+        *{margin: 0px; padding:0px;}
+        body { font-family:"宋体"; font-size:12px; color:#000; padding:100px;}
+        .news{}
+        .news3{ background:#ccc;}
+        .news3 li{ list-style:none; clear:both; height:20px; padding-top:8px;}
+        .news3 li#x1{ list-style:none; clear:both; height:20px; background-color:#F2F2F2}
+        .news3 li a#n0{ text-decoration:none; float:left;font-size:14px;height: 100%; margin-left: 20px;}
+        /*.news3 li a#n1{ text-decoration:none; float:left; font-size:14px;height: 100%; width: 140px;overflow:hidden;text-overflow:ellipsis; margin-left: 20px;}*/
+        .news3 li a#n1{ text-decoration:none; float:left; font-size:14px;margin-left: 20px;height: 100%; overflow:hidden; width:180px;text-overflow:ellipsis;white-space:nowrap;}
+        .news3 li a#nntitle{ text-decoration:none; float:left; margin-left: 200px;}
+        .news3 li a#n2{ text-decoration:none; float:right; color:#999}
+        .news3 li a#n3{ float:right; padding-right:20px;color:#999}
+        .news3 li a#n1:hover{ text-decoration:underline;}
+        .news3 li a#n3:hover,.news li a#n3:hover{ text-decoration:none;}
+        -->
+    </style>
+    <script src="http://page-nav-js-jquery.googlecode.com/files/pagenav1.1.min.js"></script>
+    <style type="text/css" media="screen">
+        a { color:#2B4A78; text-decoration:none; }
+        a:hover { color:#2B4A78;text-decoration:underline; }
+        a:focus, input:focus {outline-style:none; outline-width:medium; }
+
+            /* custom css style: pageNum,cPageNum */
+        .pageNum{border: 1px solid #999;padding:2px 8px;display: inline-block;}
+        .cPageNum{font-weight: bold;padding:2px 5px;}
+        #pageNav a:hover{text-decoration:none;background: #fff4d8; }
+
+    </style>
+
+    <script>
+
+        //$(function(){ //for jquery
+        window.onload = (function(){
+
+            //optional set
+            pageNav.pre="PRE";
+            pageNav.next="NEXT";
+
+            //  p:current page number.
+            //  pn: page sum.
+            pageNav.fn = function(p,pn){
+                document.getElementById("test").innerHTML ="Page:"+p+" of "+pn + " pages.";
+            };
+            pageNav.go(3,33);
+
+        });
+    </script>
+</head>
+<body>
+
+
+<div style="width: 100%;">
+   <div style="float:left;width:50%;">当前用户:{{ user_name }}</div>
+    <div style="float:left;"> <a href="/logout">退出</a></div>
+</div>
+
+<table>
+    <tr>
+            <input id="username" type="hidden" name="author" value="{{ user_name }}"/>
+            <td><br /><h4>创建文章</h4><br />
+                选择分类:
+                <select id="selectTest" name="selectTest">
+
+                </select>
+                <input id="title" name="title" type="text" style="width:400px;"/>
+                <div id="model" style="float:right">
+                    <input  name="content" type="button" onclick="go_model(1)" value="切换至简体模式"/>
+                </div>
+                <div id="textcontent">
+                    <textarea id="markItUp" cols="80" rows="20"></textarea>
+                </div>
+                <input type="button" value="保存并发布文章" onclick="return post_article(2)"/>
+                <input type="button" value="保存为草稿" onclick="return post_article(1)"/></td>
+            </td>
+    </tr>
+</table>
+
+<div>
+    <br />
+    <h4>文章列表</h4>
+    <br/>
+    <div>
+        <div>
+            <!-- 列表数据采用ajax填充 -->
+            <ul class="news3">
+                <li>
+                    <a id="n0">序号</a>
+                    <a id="n1">分类</a>
+                    <a id="n1">标题</a>
+
+                    <a id="n1">正文属性</a>
+                    <a id="n1">时间</a>
+                    <a id="n1" style="margin-left: 0px;">状态</a>
+                </li>
+                <font id="list"></font>
+            </ul>
+            <br/>
+            <div  id="pageNav" style="float:right;"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Add markItUp! to your textarea in one line
+        // $('textarea').markItUp( { Settings }, { OptionalExtraSettings } );
+        $('#markItUp').markItUp(mySettings);
+        $('.add').click(function() {
+            $('#markItUp').markItUp('insert',
+                    { 	openWith:'<opening tag>',
+                        closeWith:'<\/closing tag>',
+                        placeHolder:"New content"
+                    }
+            );
+            return false;
+        });
+
+        // And you can add/remove markItUp! whenever you want
+        // $(textarea).markItUpRemove();
+        $('.toggle').click(function() {
+            if ($("#markItUp.markItUpEditor").length === 1) {
+                $("#markItUp").markItUp('remove');
+                $("span", this).text("get markItUp! back");
+            } else {
+                $('#markItUp').markItUp(mySettings);
+                $("span", this).text("remove markItUp!");
+            }
+            return false;
+        });
+            $.ajax({
+                url:"/category/ajax/",
+//                async:false,
+                success:function(data){
+                    var t = eval(data);
+                    var html = "";
+                    for (var i=0;i<data.category.length;i++)
+                    {
+                        if(i == 0){
+                            html = html + '<option value="'+ data.category[i].id +'" selected="true">' + data.category[i].content + "</option>";
+                        }else{
+                            html = html+'<option value="'+ data.category[i].id +'">' + data.category[i].content + "</option>";
+                        }
+                    }
+                    $("#selectTest").html(html);
+                }
+            })
+        //查询文章列表
+        $.ajax({
+            url:"/artile/ajax/",
+//            async:false,
+            success:function(data){
+                var t = eval(data);
+                var html = "";
+                for(var i = 0; i< t.data.length; i++){
+                    html = html + '<li><a id="n0">*</a>';
+                    html = html + '<a id="n1" style="margin-left: 30px;" >'+t.data[i].category+'</a>';
+                    html = html + '<a id="n1" style="margin-left: -10px;">'+t.data[i].title+'</a>';
+                    if(t.data[i].status == 1){
+                        var status = "编辑中...";
+                        html = html + '<a href="/status/ajax/'+ t.data[i].id+'/2'+'"  id="status'+t.data[i].id+'" title="点击发布">'+status+'</a>';
+                    }
+                    else if(t.data[i].status == 2){
+                        var status = "已发布";
+                        html = html + '<a href="/status/ajax/'+ t.data[i].id+'/0'+'"  id="status'+t.data[i].id+'" title="点击删除">'+status+'</a>';
+                    }
+                    else{
+                        var status = "已删除";
+                        html = html + '<a href="/status/ajax/'+ t.data[i].id+'/1'+'"  id="status'+t.data[i].id+'" title="点击编辑">'+status+'</a>';
+                    }
+
+                    html = html + '<a id="n1">'+t.data[i].content+'</a>';
+                    html = html + '<a id="n1">'+t.data[i].create_date+'</a>';
+                }
+                html = html + "</li>";
+                $("#list").append(html);
+            }
+        })
+    });
+</script>
+</body>
+</html>
