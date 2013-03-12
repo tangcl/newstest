@@ -16,7 +16,6 @@ from core.dao.tuser import UserDao
 from core.dao.category import CategoryDao
 
 class ListHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(ListHandler, self).get()
         #查询出分类下的最新20列表数据
@@ -26,7 +25,6 @@ class ListHandler(NoneHandler):
         data = []
         if categorylist:
             #有分类,根据分类查询出改分类的文章.
-
             for category in categorylist:
                 category_dict = {}
                 news_list = newsdao.get_news_byCategory(category.content)
@@ -41,7 +39,6 @@ class ListHandler(NoneHandler):
         return self.render("index.html", data = {"data":data})
 
 class DetailHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self, id):
         super(DetailHandler, self).get()
         #获取新闻ID,获取详情
@@ -55,7 +52,6 @@ class DetailHandler(NoneHandler):
         else:
             return self.render("detail.html", news = news, info=False)
 class CategoryAjaxHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(CategoryAjaxHandler, self).get()
         #查询出当前所有分类
@@ -69,32 +65,29 @@ class CategoryAjaxHandler(NoneHandler):
 
 
 class SupportAjaxHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self, news_id, support):
         super(SupportAjaxHandler, self).get()
         #根据文章ID,插入数据
         infodao = InfoDao()
-        print "news_id:", news_id
         sign =  infodao.insert_data(news_id, support_id=support)
-
         if sign:
             self.set_cookie(news_id, support)
-            return self.write({"support":support})
+            self.write({"support":support, "news_id":news_id})
+        else:
+            self.write({})
 
 class PointAjaxHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self, news_id, point):
         super(PointAjaxHandler, self).get()
         #根据文章ID,插入数据
         infodao = InfoDao()
         sign =  infodao.insert_data(news_id, point_id=point)
+        self.set_cookie("point_cookie", point)
         if sign:
-            self.set_cookie("point_cookie", point)
             return self.write({"point":point})
 
 
 class NewsHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(NewsHandler, self).get()
 
@@ -103,7 +96,6 @@ class NewsHandler(NoneHandler):
         return self.render("newest.html", data = all_news)
 
 class ArticleAjaxHandler(NoneHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(ArticleAjaxHandler, self).get()
         username = self.get_current_user()

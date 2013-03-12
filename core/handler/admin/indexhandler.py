@@ -12,13 +12,11 @@ from core.dao.tuser import UserDao
 from core.dao.category import CategoryDao
 
 class LogoutHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self):
         self.clear_all_cookies()
         return self.redirect("/admin/login")
 
 class RegisterHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self):
         return self.render("register.html", sign=True)
 
@@ -41,13 +39,11 @@ class RegisterHandler(BaseHandler):
             return self.render("register.html", sign = 3)
 
 class ModeleAjaxHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self, model):
         super(ModeleAjaxHandler, self).get()
         return self.write({"model":model})
 
 class CategoryAjaxHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(CategoryAjaxHandler, self).get()
         #查询出当前所有分类
@@ -60,7 +56,6 @@ class CategoryAjaxHandler(BaseHandler):
         return self.write({"category":category_json_list})
 
 class StatusAjaxHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self, id, status):
         super(StatusAjaxHandler, self).get()
         newsdao = NewsDao()
@@ -68,7 +63,6 @@ class StatusAjaxHandler(BaseHandler):
         return self.redirect("/admin/login")
 
 class ArticleAjaxHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(ArticleAjaxHandler, self).get()
         username = self.get_current_user()
@@ -111,15 +105,12 @@ class ArticleAjaxHandler(BaseHandler):
 
 
 class AdminIndexHandler(BaseHandler):
-    @tornado.web.asynchronous
     def get(self):
         super(AdminIndexHandler, self).get()
         username = self.get_current_user()
-        print "username:", username
         return self.render("adminindex.html", user_name=username, sign = 0)
 
     def post(self):
-        print "hellworld"
         #username, userpassword, check in databases
         username = self.get_argument("username")
         password = self.get_argument("password")

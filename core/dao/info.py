@@ -20,10 +20,8 @@ class InfoDao(object):
 
     def insert_data(self, news_id, support_id=0, point_id=0):
         self.session = self.getSession()
-        print "insert_data"
         try:
             info = self.session.query(Info).filter_by(news_id=news_id).first()
-            print info
             if info:
                 if support_id == 0:
                     #更新踩一下数据

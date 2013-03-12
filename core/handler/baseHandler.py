@@ -20,7 +20,6 @@ class NoneHandler(RequestHandler):
             (r'/user/(.*)', ProfileHandler, dict(database=database)),
             ])
         '''
-    @tornado.web.asynchronous
     def get(self):
         pass
     def post(self):
@@ -50,15 +49,12 @@ class BaseHandler(RequestHandler):
             (r'/user/(.*)', ProfileHandler, dict(database=database)),
             ])
         '''
-    @tornado.web.asynchronous
     def get(self):
         '''
         继承get方法，传入参数
         '''
         if self.current_user is None:
             return self.render("login.html", sign=True)
-
-
 
     def post(self):
         pass
